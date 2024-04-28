@@ -1,0 +1,8 @@
+output.aac
+temp
+venv
+__pycache__/
+*.aac
+cache/*
+.history/
+.env

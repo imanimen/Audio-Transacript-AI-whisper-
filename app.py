@@ -14,6 +14,13 @@ from uuid import uuid4
 app = FastAPI()
 model = whisper.load_model("tiny")  # Load model once during startup
 
+"""
+Represents an audio file and its associated file ID for transcription.
+
+Parameters:
+- `path`: The file path of the audio file.
+- `file_id`: The unique identifier for the audio file.
+"""
 class AudioTranscriptModel(BaseModel):
     path: str
     file_id: str
@@ -26,6 +33,16 @@ def get_hash(audio_path):
 async def read_root():
     return {"Hello": "World"}
 
+"""
+Transcribes an audio file and stores the transcript in MongoDB.
+
+Parameters:
+- `data`: An `AudioTranscriptModel` instance containing the path to the audio file and the file ID.
+- `background_tasks`: A `BackgroundTasks` instance to execute the audio transcription in the background.
+
+Returns:
+- A dictionary with the status of the transcript request and the transcript result.
+"""
 @app.post("/transcript/")
 async def transcript(data: AudioTranscriptModel, background_tasks: BackgroundTasks):
     hash = hashlib.md5(open(data.path, 'rb').read()).hexdigest()
@@ -46,6 +63,15 @@ async def transcript(data: AudioTranscriptModel, background_tasks: BackgroundTas
     return {"status": "file transcript requested!", "transcript": result}
 
 
+"""
+Uploads a file to the server and stores the file path in MongoDB.
+
+Parameters:
+- `file`: The uploaded file.
+
+Returns:
+- A dictionary with the status of the upload and the generated filename.
+"""
 @app.post("/upload/")
 async def upload_file(file: UploadFile = File(...)):
     # Generate a unique filename

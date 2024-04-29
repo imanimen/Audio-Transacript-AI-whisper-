@@ -3,6 +3,13 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+
+# MongoDB connection details
+mongo_url = os.getenv("MONGO_URL")
+
+# Create a MongoDB client and connect to the server
+client = MongoClient(mongo_url)
+
 """
 Inserts a document into the 'sounds_data' collection in the 'sounds' database.
 
@@ -14,12 +21,6 @@ Returns:
     None
 """
 def insert(result, file_id):
-    # MongoDB connection details
-    uri = os.getenv('MONGO_URL')
-
-    # Create a new client and connect to the MongoDB server
-    client = MongoClient(uri)
-
     # Specify the database and collection
     db = client.sounds
     collection = db.sounds_data
@@ -29,8 +30,6 @@ def insert(result, file_id):
 
     # Insert the result into the collection
     collection.insert_one(result)
-    client.close()
-    
 
 """
 Uploads a file to the MongoDB database.
@@ -42,12 +41,6 @@ Returns:
     None
 """
 def uploadFile(path):
-    # MongoDB connection details
-    mongo_url = os.getenv("MONGO_URL")
-
-    # Create a new client and connect to the MongoDB server
-    client = MongoClient(mongo_url)
-
     # Specify the database and collection
     database_name = "service_files"  # Specify your desired database name
     collection_name = "service_files"  # Specify your desired collection name
@@ -59,4 +52,4 @@ def uploadFile(path):
     document = {"path": path}
 
     # Insert the document into the collection
-    collection.insert_one(document)    
+    collection.insert_one(document)
